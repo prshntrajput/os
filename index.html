@@ -89,7 +89,6 @@
             </div>
             
             <div id="contentDisplay" class="mt-8">
-                <!-- Selected topic content will be injected here -->
             </div>
 
         </main>
@@ -155,31 +154,130 @@
                 concept: `Imagine two people walking towards each other in a narrow hallway. To be polite, both step to their right. Now they are blocking each other again. Neither can move forward. This is a **deadlock**. In computing, a deadlock is a situation where two or more processes are blocked forever, each waiting for a resource that is held by another process in the group.`,
                 example: `Process A locks Resource 1. Process B locks Resource 2. Now, Process A tries to lock Resource 2 but must wait for B. Simultaneously, Process B tries to lock Resource 1 but must wait for A. Neither can proceed.`,
                 interview: [
-                    { q: 'What are the four conditions for deadlock?', a: '1. Mutual Exclusion, 2. Hold and Wait, 3. No Preemption, 4. Circular Wait.'},
+                    { q: 'What are the four conditions for deadlock?', a: '1. Mutual Exclusion<br>2. Hold and Wait<br>3. No Preemption<br>4. Circular Wait.'},
                     { q: 'How can you prevent deadlocks?', a: 'By ensuring at least one of the four conditions is never met. For example, break circular wait by enforcing a strict resource ordering.' },
                     { q: 'What is the difference between deadlock prevention and deadlock avoidance?', a: '**Prevention** involves designing a system where deadlocks are structurally impossible. **Avoidance** is more dynamic, using algorithms like Banker\'s to ensure the system never enters an unsafe state.' },
                 ]
             },
-            // Add all other content entries here, following the same structure.
-            // For brevity in this example, other entries are omitted but would be included in a full implementation.
-        };
-        
-        // Populate the rest of the content object for all 16 topics
-        for (let i = 5; i <= 16; i++) {
-            const topic = osData.find(d => d.id === i);
-            if (topic) {
-                content[i] = {
-                    title: topic.title,
-                    concept: `This is the concept explanation for ${topic.title}. It would be filled with a detailed, easy-to-understand analogy.`,
-                    example: `This section would contain a real-world example illustrating the principles of ${topic.title}.`,
-                    interview: [
-                        { q: `What is a key interview question about ${topic.title}?`, a: 'The answer would detail a common problem or definition related to this topic.' },
-                        { q: `How does ${topic.title} apply in practical systems?`, a: 'This answer would provide a system design context for the concept.' }
-                    ]
-                };
+            5: {
+                title: 'Banker\'s Algorithm',
+                concept: `This is a classic deadlock **avoidance** algorithm. Imagine a banker who has a fixed amount of money (resources). Several customers come and state the *maximum* loan they will ever need.<br><br>The banker's rule is: "I will only grant a loan request if I am sure that after granting it, I can still satisfy the maximum potential needs of at least one of my customers." The system is in a **safe state** if there is some sequence of finishing all processes.`,
+                example: `**Banker's Capital (Total Resources)**: 10 units.<br>**Customer A (Process A)**: Max need = 7, Currently has = 2.<br>**Customer B (Process B)**: Max need = 5, Currently has = 3.<br>**Customer C (Process C)**: Max need = 8, Currently has = 1.<br><br>**Current State**: Banker has 4 units available. Can the banker satisfy B (needs 2)? Yes. B finishes, returns 5. Banker now has 7. Can satisfy A (needs 5) and C (needs 7). The state is **safe**.`,
+                interview: [
+                    { q: 'What information does the Banker\'s Algorithm need to work?', a: '1. The maximum number of each resource that each process could possibly request.<br>2. The number of each resource currently allocated to each process.<br>3. The number of each resource currently available in the system.' },
+                    { q: 'What are the disadvantages of the Banker\'s Algorithm?', a: 'Its main drawback is that it requires knowing the maximum resource needs in advance, which is often not possible in a real system. It\'s also computationally expensive to run the safety check every time a resource is requested.' }
+                ]
+            },
+            6: {
+                title: 'Virtual Memory & Paging',
+                concept: `Imagine you have a tiny desk (your **Physical Memory / RAM**) but a huge library of books you need to work with (your **Program**). You can't fit all the books on your desk at once.<br><br>**Virtual Memory** is a clever trick. You pretend you have a massive, infinite desk. The books are divided into equal-sized chapters (**Pages**). You only bring the specific chapter you are reading right now onto your desk. The desk itself is divided into slots of the same size, called **Frames**.<br><br>When you need a chapter that isn't on your desk, a **Page Fault** occurs. The librarian (Operating System) finds the chapter in the library (Hard Disk) and places it on your desk.`,
+                example: `**Virtual Address**: The address the program *thinks* it's using (in its giant virtual library).<br>**Physical Address**: The actual address in RAM (on the desk).<br>**Page Table**: A special notebook kept by the OS that maps the virtual pages to their physical frames on the desk.`,
+                interview: [
+                    { q: 'What are the benefits of using virtual memory?', a: '1) It allows you to run programs that are larger than your physical RAM. 2) It provides memory protection, as each process has its own virtual address space. 3) It allows for more efficient process creation.' },
+                    { q: 'What is a page fault? Is it an error?', a: 'A page fault is not an error. It\'s a normal event that happens when a process tries to access a page that is not currently in RAM. The OS handles this by loading the required page from the disk. It\'s a performance hit, but it\'s essential for how virtual memory works.' }
+                ]
+            },
+            7: {
+                title: 'Page Replacement Algorithms',
+                concept: `Your desk (RAM) is full of book chapters (pages), but you need to bring in a new one. Which chapter do you put back in the library (swap out) to make room? The method you use is a **Page Replacement Algorithm**.`,
+                example: `**FIFO (First-In, First-Out)**: You remove the chapter that has been on your desk the longest.<br><br>**LRU (Least Recently Used)**: You remove the chapter you haven't looked at for the longest time. This is a good strategy because if you haven't used it recently, you probably won't use it again soon.<br><br>**Optimal (OPT)**: You look into the future and remove the chapter that won't be needed for the longest period of time. This is the perfect algorithm but impossible to implement.`,
+                interview: [
+                    { q: 'Explain the LRU algorithm and why it\'s generally better than FIFO.', a: 'LRU replaces the page that has not been used for the longest period. It\'s better than FIFO because it\'s based on the principle of locality of reference—programs tend to reuse data they have used recently. FIFO might kick out a heavily used page simply because it was loaded a long time ago.' },
+                    { q: 'What is Belady\'s Anomaly?', a: 'It\'s a strange phenomenon where, for some algorithms like FIFO, increasing the number of available frames can actually *increase* the number of page faults. This is counter-intuitive and does not happen with LRU or Optimal algorithms.' }
+                ]
+            },
+            8: {
+                title: 'Segmentation and Paging',
+                concept: `**Paging** and **Segmentation** are two different ways to manage a program's memory.<br><br>**Paging** (The Librarian's View): The program is chopped into fixed-size blocks called **pages**. The physical memory is divided into fixed-size **frames**. It's a purely physical division.<br><br>**Segmentation** (The Programmer's View): The program is divided into logical, variable-sized blocks called **segments** (e.g., code, data, stack).`,
+                table: [
+                    { feature: 'Division', process: 'Physical (fixed-size pages)', thread: 'Logical (variable-size segments)' },
+                    { feature: 'Size', process: 'All pages are same size', thread: 'Segments can be different sizes' },
+                    { feature: 'Programmer\'s View', process: 'Unaware of pages', thread: 'Aware of segments' },
+                    { feature: 'Fragmentation', process: 'Internal', thread: 'External' },
+                ],
+                example: `**Paged Segmentation**: Modern systems often combine both. The program is first divided into logical segments, and then each segment is further divided into fixed-size pages. This gives you the best of both worlds: logical organization and efficient physical memory management.`,
+                interview: [
+                    { q: 'What is the difference between internal and external fragmentation?', a: '**External Fragmentation** happens when you have enough total free memory, but it\'s not contiguous. **Internal Fragmentation** happens when a process is allocated more memory than needed in a fixed block, wasting space *inside* the block.' },
+                    { q: 'Why is paging more common in modern OS than pure segmentation?', a: 'Paging simplifies memory management. Swapping equal-sized pages is much easier than finding space for variable-sized segments. It effectively eliminates the problem of external fragmentation.' }
+                ]
+            },
+            9: {
+                title: 'CPU Scheduling',
+                concept: 'This is a focused look at how the OS decides which process gets the CPU.',
+                example: `**FCFS (First-Come, First-Served)**: Non-preemptive. Simple but can cause a "convoy effect".<br><br>**SJF (Shortest-Job-First)**: Optimal for average wait time, but risks starving long jobs and requires knowing the future.<br><br>**RR (Round Robin)**: Preemptive. Fair and good for interactive systems, but performance depends on the time quantum size.`,
+                interview: [
+                    { q: 'Compare and contrast SJF and Round Robin.', a: 'SJF is optimal for average wait time but risks starving long processes. Round Robin is focused on fairness and response time, ensuring every process gets a turn, which prevents starvation. RR is better for time-sharing systems.' },
+                    { q: 'What is a context switch?', a: 'A context switch is the process of saving the state of the currently running process and loading the state of the next one. It\'s pure overhead, as no useful work is done during a switch. Algorithms that cause frequent switches (like RR with a small quantum) incur more overhead.' }
+                ]
+            },
+            10: {
+                title: 'Semaphores vs Mutex',
+                concept: `These are two key tools for **Thread Synchronization**.<br><br>**Mutex (Mutual Exclusion)**: Think of a key to a private room. Only one thread can have the key at a time. The same thread that locks it must be the one to unlock it.<br><br>**Semaphore**: Think of a bike rental station with a limited number of bikes. The semaphore is a counter controlling access to a pool of N resources.`,
+                table: [
+                    { feature: 'Type', process: 'Locking mechanism', thread: 'Signaling mechanism' },
+                    { feature: 'Analogy', process: 'Key to a single toilet', thread: 'Counter for keys to multiple toilets' },
+                    { feature: 'Ownership', process: 'Locker must be unlocker', thread: 'Any thread can signal/wait' },
+                    { feature: 'Use Case', process: 'Protecting critical section', thread: 'Controlling N resources' },
+                ],
+                example: `Use a **Mutex** to protect a shared variable that only one thread should modify at a time. Use a **Semaphore** to manage a pool of 10 database connections available to 50 threads.`,
+                interview: [
+                    { q: 'What\'s the difference between a binary semaphore and a mutex?', a: 'While a binary semaphore (count of 1) can function like a mutex, the key difference is ownership. A mutex must be unlocked by the same thread that locked it. A semaphore\'s signal operation can be done by any thread.' },
+                    { q: 'When would you use a semaphore over a mutex?', a: 'When you need to control access to a pool of multiple resources (e.g., database connections) or for complex signaling scenarios like the Producer-Consumer problem.' }
+                ]
+            },
+            11: {
+                title: 'Dining Philosophers Problem',
+                concept: `This is a classic synchronization problem. Five philosophers are at a round table with five chopsticks between them. To eat, a philosopher needs *both* chopsticks to their left and right.<br><br>The problem: What if every philosopher picks up their left chopstick at the same time? Now, everyone is waiting for the chopstick on their right, which is held by their neighbor. This is a **deadlock**.`,
+                example: 'This problem models any situation where multiple processes need exclusive access to a set of limited resources. For example, several database processes might each need to lock two different tables to perform a transaction. If they do it in the wrong order, they can deadlock.',
+                interview: [
+                    { q: 'How can you solve the Dining Philosophers problem?', a: '1. **Resource Hierarchy**: Number the chopsticks 1-5 and require philosophers to pick up the lower-numbered one first.<br>2. **Use a Waiter (Mutex)**: Allow only one philosopher to try and pick up chopsticks at a time.<br>3. **Allow only N-1 philosophers**: If only four philosophers are at the table, at least one will always be able to get both chopsticks.' }
+                ]
+            },
+            12: {
+                title: 'Inodes and File Allocation',
+                concept: `A **File System** is the OS's way of organizing data on a disk. The **Inode (Index Node)** is a data structure that stores all metadata about a file *except* its name and actual data. Think of it as a library's card catalog entry for a book. It contains size, owner, permissions, and pointers to the data blocks.`,
+                example: `**Contiguous Allocation**: Store the file in one single, continuous block. Fast but causes external fragmentation.<br><br>**Linked Allocation**: Each block points to the next. Flexible but slow for random access.<br><br>**Indexed Allocation**: An inode points to an index block, which is a list of pointers to all the data blocks. A good balance of features.`,
+                interview: [
+                    { q: 'What happens when you type `ls -l` in a Linux terminal?', a: 'The shell asks the kernel to read the current directory file to get a list of filenames and inode numbers. For each file, the kernel looks up the inode and reads its metadata (permissions, owner, size, etc.) to display. The actual file data is not read.' },
+                    { q: 'Explain how indexed allocation works.', a: 'Each file has an index block. This block doesn\'t store data; it stores the disk addresses of the actual data blocks. The OS reads this index block to find and access any data block directly, allowing for fast random access.' }
+                ]
+            },
+            13: {
+                title: 'Disk Scheduling Algorithms',
+                concept: `A hard disk drive (HDD) has a read/write head that moves across spinning platters. Moving this head ("seek") is very slow. **Disk Scheduling** is how the OS orders disk read/write requests to minimize this head movement.`,
+                example: `**FCFS**: Service requests in order. Fair but inefficient.<br><br>**SSTF (Shortest Seek Time First)**: Service the closest request. Efficient but can starve distant requests.<br><br>**SCAN (Elevator Algorithm)**: The head moves in one direction, servicing all requests in its path, then reverses. A good compromise.<br><br>**C-SCAN (Circular SCAN)**: Like SCAN, but after reaching the end, the head jumps back to the beginning. More uniform wait time.`,
+                interview: [
+                    { q: 'Why is the Elevator (SCAN) algorithm a good approach?', a: 'It\'s a good compromise between performance and fairness. It avoids the starvation problem of SSTF because the head will eventually service all requests, and it\'s much more efficient than FCFS.' },
+                    { q: 'Does disk scheduling matter for an SSD (Solid State Drive)?', a: 'Not in the same way. SSDs have no moving parts, so there is no seek time to minimize. Access time for any block is roughly the same. Simpler algorithms like FCFS are often used for SSDs.' }
+                ]
+            },
+            14: {
+                title: 'Memory Fragmentation',
+                concept: `**Fragmentation** is wasted memory that the system cannot use.`,
+                example: `**External Fragmentation**: You have enough *total* free space, but it's not in one continuous block. Imagine a parking lot with 10 empty spots, but they are all single spots. You can't park a limousine. This happens with segmentation.<br><br>**Internal Fragmentation**: Occurs when memory is allocated in fixed-size blocks (pages). If a process needs 7KB and the page size is 4KB, it gets two blocks (8KB). The 1KB in the second block is allocated but unused.`,
+                interview: [
+                    { q: 'Paging suffers from which type of fragmentation? Segmentation suffers from which?', a: 'Paging suffers from **internal** fragmentation. Segmentation suffers from **external** fragmentation.' },
+                    { q: 'How can you deal with external fragmentation?', a: 'The primary solution is **compaction**, but it\'s slow. A better approach is to use a memory management scheme that avoids it in the first place, like paging, which allows a process\'s physical memory to be non-contiguous.' }
+                ]
+            },
+            15: {
+                title: 'Multi-threaded Patterns',
+                concept: `A core pattern in multi-threading is the **Producer-Consumer Problem**. It provides a template for many real-world applications where one part of a system generates work and another part processes it.`,
+                example: `This pattern is everywhere:<br><br>**Web Server**: One thread (producer) accepts incoming network connections and places them in a queue. A pool of worker threads (consumers) takes connections from the queue and processes them.<br><br>**Video Streaming**: One thread downloads video data into a buffer. Another thread reads from the buffer to play the video.`,
+                interview: [
+                    { q: 'How can you coordinate threads in a Producer-Consumer scenario?', a: 'The standard solution uses a combination of a mutex (for exclusive access to the shared buffer) and semaphores (to signal when the buffer is no longer empty or no longer full), preventing threads from busy-waiting.' }
+                ]
+            },
+            16: {
+                title: 'Producer-Consumer Problem',
+                concept: `Imagine a bakery. One baker (**The Producer**) bakes croissants and places them on a single display shelf (**The Buffer**). A customer (**The Consumer**) comes and takes a croissant from the shelf.<br><br>The rules are: 1. The producer cannot add a croissant if the shelf is full. 2. The consumer cannot take a croissant if the shelf is empty. 3. Only one person can access the shelf at a time (mutual exclusion).`,
+                example: `**Web Server**: One thread (the producer) accepts incoming network connections and places them in a queue (the buffer). A pool of worker threads (the consumers) takes connections from the queue and processes them.<br><br>**Video Streaming**: One thread downloads video data into a buffer. Another thread reads from the buffer to play the video on screen.`,
+                interview: [
+                    { q: 'How would you solve the Producer-Consumer problem using semaphores?', a: 'Use three tools: 1. A **mutex** for exclusive access to the buffer. 2. An `emptyCount` semaphore (init to buffer size) for the producer to wait on. 3. A `fullCount` semaphore (init to 0) for the consumer to wait on.' },
+                    { q: 'Why do you need both a mutex and semaphores in the solution?', a: 'The semaphores handle the long-term synchronization—making threads wait when the buffer is full or empty. The mutex handles the short-term, critical section protection—ensuring the actual `add/remove` operation is atomic.' }
+                ]
             }
-        }
-
+        };
 
         let chart;
         const ctx = document.getElementById('frequencyChart').getContext('2d');
@@ -193,7 +291,7 @@
             osData.forEach(topic => {
                 topic.companies.forEach(c => companies.add(c.name.split(' ')[0]));
             });
-            companies.forEach(company => {
+            Array.from(companies).sort().forEach(company => {
                 const option = document.createElement('option');
                 option.value = company;
                 option.textContent = company;
@@ -237,26 +335,16 @@
                     scales: {
                         x: {
                             beginAtZero: true,
-                            ticks: {
-                                color: '#475569'
-                            },
-                            grid: {
-                                color: '#e2e8f0'
-                            }
+                            ticks: { color: '#475569', stepSize: 1 },
+                            grid: { color: '#e2e8f0' }
                         },
                         y: {
-                            ticks: {
-                                color: '#475569'
-                            },
-                             grid: {
-                                display: false
-                            }
+                            ticks: { color: '#475569' },
+                             grid: { display: false }
                         }
                     },
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             backgroundColor: '#1e293b',
                             titleFont: { size: 14 },
@@ -271,14 +359,14 @@
 
         const renderTopicGrid = (filteredData) => {
             topicGrid.innerHTML = '';
-            const relevantTopics = filteredData.filter(topic => topic.companies.reduce((sum, c) => sum + c.count, 0) > 0);
+            const dataToRender = filteredData.filter(topic => topic.companies.reduce((sum, c) => sum + c.count, 0) > 0);
             
-            if(relevantTopics.length === 0 && companyFilter.value !== 'All') {
+            if(dataToRender.length === 0 && companyFilter.value !== 'All') {
                 topicGridIntro.textContent = `No specific data available for ${companyFilter.value}. Showing all topics. Click any card to learn more.`;
                 osData.forEach(createTopicCard);
             } else {
-                 topicGridIntro.textContent = `Below are the core Operating Systems topics. Click on any card to dive into a detailed explanation, real-world examples, and common interview questions for that subject. The list will update based on the company filter applied above.`;
-                relevantTopics.forEach(createTopicCard);
+                topicGridIntro.textContent = `Below are the core Operating Systems topics. Click on any card to dive into a detailed explanation, real-world examples, and common interview questions for that subject. The list will update based on the company filter applied above.`;
+                (dataToRender.length > 0 ? dataToRender : osData).forEach(createTopicCard);
             }
         };
 
@@ -296,22 +384,19 @@
 
             let tableHtml = '';
             if(topicContent.table) {
+                const headers = Object.keys(topicContent.table[0]);
                 tableHtml = `
-                    <div class="overflow-x-auto mt-4">
+                    <div class="overflow-x-auto mt-6 mb-6">
                         <table class="min-w-full divide-y divide-slate-200">
-                            <thead class="bg-slate-50">
+                            <thead class="bg-slate-100">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Feature</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Process</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Thread</th>
+                                    ${headers.map(h => `<th class="px-6 py-3 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">${h}</th>`).join('')}
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-200">
                                 ${topicContent.table.map(row => `
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">${row.feature}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">${row.process}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">${row.thread}</td>
+                                        ${headers.map(h => `<td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">${row[h]}</td>`).join('')}
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -333,7 +418,7 @@
 
                     <div class="my-6">
                         <h3 class="text-xl font-semibold mb-2 text-blue-600">Real-World Example</h3>
-                        <p class="text-slate-600 leading-relaxed">${topicContent.example.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>
+                        <div class="text-slate-600 leading-relaxed space-y-2">${topicContent.example.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
                     </div>
 
                     <div>
@@ -365,17 +450,16 @@
                 filteredData = osData.map(topic => ({
                     ...topic,
                     companies: topic.companies.filter(c => c.name.startsWith(selectedCompany))
-                })).filter(topic => topic.companies.length > 0);
+                }));
             }
             
             renderChart(filteredData);
             renderTopicGrid(filteredData);
-            contentDisplay.innerHTML = ''; // Clear content when filter changes
+            contentDisplay.innerHTML = '';
         };
 
         companyFilter.addEventListener('change', filterData);
 
-        // Initial Load
         populateCompanies();
         filterData();
 
